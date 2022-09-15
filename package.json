@@ -1,0 +1,28 @@
+{
+  "name": "firestore-starter",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "keywords": [],
+  "author": "Steve <steve@home.org>",
+  "license": "MIT",
+  "dependencies": {
+    "firebase": "^9.9.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prof3ssorSt3v3/firestore-giftr-starter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/prof3ssorSt3v3/firestore-giftr-starter/issues"
+  },
+  "homepage": "https://github.com/prof3ssorSt3v3/firestore-giftr-starter#readme",
+  "description": "",
+  "devDependencies": {
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
+  }
+}
