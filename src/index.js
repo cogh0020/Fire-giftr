@@ -46,9 +46,10 @@ document.addEventListener('DOMContentLoaded', () => {
   .getElementById('btnSaveIdea')
   .addEventListener('click', saveIdea)
   
-  document.
-  getElementById('personUL')
+  document
+  .getElementById('personUL')
   .addEventListener('click', handlePersonClick)
+
   getPeople()
 });
 
@@ -259,17 +260,21 @@ function showOverlay(ev) {
 //TODO: Include proper save/show functions in this call
 function handlePersonClick(ev) {
   ev.preventDefault();
+  console.log('handle Click called')
+  currentPersonID = ev.target.closest(".person").dataset.id
   setSelectedPerson();
 }
 
 //Remove the selected class from persons, then add the tag to the currently selected one
 function setSelectedPerson() {
+  console.log('setSelectedPerson called')
   let personItems = document.querySelectorAll('.person')
   personItems.forEach((item)=> {
     item.classList.remove('selected')
   })
   personItems.forEach((item)=>{
     if (item.dataset.id == currentPersonID){
+      console.log("Found user in list with id:" + item.dataset.id)
       item.classList.add('selected')
     }
   })
