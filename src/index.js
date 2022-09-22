@@ -31,12 +31,14 @@ document.addEventListener('DOMContentLoaded', () => {
   document
     .getElementById('btnCancelIdea')
     .addEventListener('click', hideOverlay);
-  //document.querySelector('.overlay').addEventListener('click', hideOverlay);
 
+    //Event listeners for AddPerson and AddIdea
   document
     .getElementById('btnAddPerson')
     .addEventListener('click', showOverlay);
-  document.getElementById('btnAddIdea').addEventListener('click', showOverlay);
+  document
+  .getElementById('btnAddIdea')
+  .addEventListener('click', showOverlay);
 
   document
   .getElementById('btnSavePerson')
@@ -48,10 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
   
   document
   .getElementById('personUL')
-  .addEventListener('click', handlePersonClick)
+  .addEventListener('click', handleClick)
 
-  currentPersonID = 'Jma3VRfVMfCZBx0k83OV';
-  setSelectedPerson()
   getPeople()
 });
 
@@ -79,9 +79,10 @@ function buildPeople(people){
     return `<li data-id="${person.id}" class="person">
             <p class="name">${person.name}</p>
             <p class="dob">${dob}</p>
+            <button class="edit">Edit</button>
+            <button class="delete">Delete</button>
           </li>`;
   }).join('')
-  getIdeas(currentPersonID)
 }
 
 async function getIdeas(id){
@@ -168,6 +169,8 @@ function showPerson(person){
     li.outerHTML = `<li data-id="${person.id}" class="person">
             <p class="name">${person.name}</p>
             <p class="dob">${dob}</p>
+            <button class="edit">Edit</button>
+            <button class="delete">Delete</button>
           </li>`;
   }else{
     //add to screen
@@ -176,6 +179,8 @@ function showPerson(person){
     li = `<li data-id="${person.id}" class="person">
             <p class="name">${person.name}</p>
             <p class="dob">${dob}</p>
+            <button class="edit">Edit</button>
+            <button class="delete">Delete</button>
           </li>`;
     document.querySelector('ul.person-list').innerHTML += li;
   }
@@ -187,7 +192,7 @@ async function saveIdea(ev){
   //function called when user clicks save button from person dialog
   let idea = document.getElementById('title').value;
   let location = document.getElementById('location').value;
-  if(!idea || !location || !personRef) return; //form needs more info 
+  if(!idea || !location ) return; //form needs more info 
   const gift = {
     idea,
     location,
@@ -239,6 +244,10 @@ function showIdea(gift){
   }
 }
 
+function editPerson(){
+
+}
+
 //Create a message in the console to alert the user
 function tellUser(message){
   console.log(message)
@@ -261,15 +270,30 @@ function showOverlay(ev) {
   document.getElementById(id).classList.add('active');
 }
 
-//This function is called every time the user clicks on a person.
-//TODO: If you click on the current selection again, nothing happens
-function handlePersonClick(ev) {
-  ev.preventDefault();
-  console.log('handle Click called')
-  currentPersonID = ev.target.closest(".person").dataset.id
-  console.log('Current person ID set to: ' + currentPersonID)
-  setSelectedPerson();
-  getIdeas(currentPersonID)
+function handleClick(ev){
+  console.log("handle Click called")
+  const li = ev.target.closest(".person")
+  const id = li ? li.dataset.id : null
+  if (id){
+    if (ev.target.classList.contains('edit')){
+      console.log('Editing a person')
+      //EDIT the doc using the id to get a docRef
+      //show the dialog form to EDIT the doc
+      //load all the thing document details into the form from docRef
+    } else if (ev.target.classList.contains('delete')){
+      console.log('Deleting a person')
+      //DELETE the doc using the id to get a docRef
+      //Make a confirmation window
+    } else {
+      //Content inside the <li> but not a <button> was clicked
+      //If the <li> was a person, set to the current selection
+      currentPersonID = id
+      setSelectedPerson()
+      getIdeas(currentPersonID)
+    }
+  } else {
+    console.log("Clicked a button not inside li")
+  }
 }
 
 //Remove the selected class from persons, then add the tag to the currently selected one
