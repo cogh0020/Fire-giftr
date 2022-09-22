@@ -17,13 +17,13 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const myDocumentRef = doc(db, 'collection-name', 'document-id');
 const myCollectionRef = collection(db, 'collection-name');
-// const peopleCollectionRef = collection(db, 'people');
-// const giftIdeasCollectionRef = collection(db, 'gift-ideas')
 const people = [];
 const giftIdeas = [];
-let currentPersonID = 0;
+let currentPersonID = '';
+let currentPersonRef = undefined;
 
 document.addEventListener('DOMContentLoaded', () => {
+  console.log("DOM content loaded")
   //set up the dom events
   document
     .getElementById('btnCancelPerson')
@@ -50,6 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
   .getElementById('personUL')
   .addEventListener('click', handlePersonClick)
 
+  currentPersonID = 'Jma3VRfVMfCZBx0k83OV';
+  setSelectedPerson()
   getPeople()
 });
 
@@ -79,13 +81,15 @@ function buildPeople(people){
             <p class="dob">${dob}</p>
           </li>`;
   }).join('')
-  currentPersonID = people[0].id
-  getIdeas(people[0].id)
+  //currentPersonID = people[0].id
+  //getIdeas(people[0].id)
+  getIdeas(currentPersonID)
 }
 
 async function getIdeas(id){
   //get an actual reference to the person document 
   const personRef = doc(collection(db, 'people'), id);
+  currentPersonRef = personRef
   //then run a query where the `person-id` property matches the reference for the person
   const docs = query(
     collection(db, 'gift-ideas'),
@@ -103,7 +107,7 @@ async function getIdeas(id){
 
 function buildIdeas(ideas){
   let ul = document.querySelector('ul.idea-list')
-  
+  //Clear the UL of existing ideas
   ul.innerHTML = ideas.map(idea=>{
     return `<li data-id="${idea.id}" class="idea">
             <label for="chk-uniqueid"
@@ -180,12 +184,11 @@ async function saveIdea(ev){
   //function called when user clicks save button from person dialog
   let idea = document.getElementById('title').value;
   let location = document.getElementById('location').value;
-  console.log(currentPersonID)
-  if(!idea || !location ) return; //form needs more info 
+  if(!idea || !location || !personRef) return; //form needs more info 
   const gift = {
     idea,
     location,
-    'person-id': currentPersonID,
+    'person-id': currentPersonRef
   };
   try {
     const docRef = await addDoc(collection(db, 'gift-ideas'), gift );
@@ -207,7 +210,6 @@ async function saveIdea(ev){
   }
 }
 
-//
 function showIdea(gift){
   let li = document.getElementById(gift.id);
   if(li){
@@ -257,12 +259,14 @@ function showOverlay(ev) {
 }
 
 //This function is called every time the user clicks on a person.
-//TODO: Include proper save/show functions in this call
+//TODO: If you click on the current selection again, nothing happens
 function handlePersonClick(ev) {
   ev.preventDefault();
   console.log('handle Click called')
   currentPersonID = ev.target.closest(".person").dataset.id
+  console.log('Current person ID set to: ' + currentPersonID)
   setSelectedPerson();
+  getIdeas(currentPersonID)
 }
 
 //Remove the selected class from persons, then add the tag to the currently selected one
