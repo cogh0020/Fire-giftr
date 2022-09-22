@@ -81,8 +81,6 @@ function buildPeople(people){
             <p class="dob">${dob}</p>
           </li>`;
   }).join('')
-  //currentPersonID = people[0].id
-  //getIdeas(people[0].id)
   getIdeas(currentPersonID)
 }
 
@@ -96,6 +94,11 @@ async function getIdeas(id){
     where('person-id', '==', personRef)
   );
   const querySnapshot = await getDocs(docs);
+  //Clear the gift ideas array
+  while (giftIdeas.length > 0){
+    giftIdeas.pop()
+    console.log("Removing item from gift ideas array")
+  }
   querySnapshot.forEach((doc) =>{
     const data = doc.data()
     const id = doc.id
