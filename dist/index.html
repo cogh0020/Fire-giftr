@@ -16,7 +16,7 @@
     <main>
       <section class="people">
         <h2>People <button id="btnAddPerson">Add Person</button></h2>
-        <ul class="person-list">
+        <ul id="personUL" class="person-list">
           <li data-id="asdfasdf" class="person">
             <p class="name">Sample Name</p>
             <p class="dob">April 9</p>
@@ -33,17 +33,32 @@
       </section>
       <section class="ideas">
         <h2>Ideas <button id="btnAddIdea">Add Idea</button></h2>
-        <ul class="idea-list">
-          <li class="idea" data-id="">
-            <label for="chk-uniqueid"
-              ><input type="checkbox" id="chk-uniqueid" /> Bought</label
-            >
-            <p class="title">Sample Gift Idea</p>
-            <p class="location">url or store name</p>
+        <ul id="ideaUL"class="idea-list">
+          <!-- Ideas go here -->
+          <li class="idea">
+            <label for="chk-uniqueid"><input type="checkbox" id="chk-uniqueid" /> Bought</label>
+            <div class="gift-content">
+              <div class="gift-text">
+                <p class="title">Gift</p>
+                <p class="location">Location</p>
+              </div>
+              <div class="gift-buttons">
+                <button class="edit">Edit</button>
+                <button class="delete">Delete</button>
+              </div>
+            </div>
           </li>
         </ul>
       </section>
     </main>
+    <section class="messageWindow">
+      <dialog id="dlgDelete">
+        <h2>Delete item</h2>
+        <p>Delete this item?</p>
+        <button class="confirmDelete">YES</button>
+        <button class="cancelDelete">Cancel</button>
+      </dialog>
+    </section>
     <section class="overlay active">
       <dialog id="dlgPerson" class="">
         <h2>Add Person</h2>
