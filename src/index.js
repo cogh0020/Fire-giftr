@@ -118,8 +118,15 @@ async function getIdeas(id){
 
 function buildIdeas(ideas){
   let ul = document.querySelector('ul.idea-list')
-  //Clear the UL of existing ideas
-  ul.innerHTML = ideas.map(gift=>{
+  if (ideas.length == 0) {
+    ul.innerHTML = 
+    `<li class="idea">
+      <div class="emptyIdeas">
+        <h2>No ideas yet!</h2>
+      </div>
+    </li>`
+  } else {
+    ul.innerHTML = ideas.map(gift=>{
     return `<li data-id="${gift.id}" class="idea">
             <label for="chk-uniqueid"><input type="checkbox" id="chk-uniqueid" /> Bought</label>
             <div class="gift-content">
@@ -134,6 +141,7 @@ function buildIdeas(ideas){
             </div>
           </li>`;
   }).join('')
+  }
 }
 
 //copied from course notes
@@ -288,7 +296,6 @@ function showIdea(gift){
               </div>
             </div>
           </li>`
-          
     document.querySelector('ul.idea-list').innerHTML += li;
   }
 }
@@ -317,14 +324,6 @@ function hideOverlay(ev) {
     .forEach((dialog) => dialog.classList.remove('active'));
   //TODO: Clear the dataset id from overlay and add buttons
   
-}
-//showOverlay is obsolete - functionality moved to handleIdeaClick and handlePersonCLick
-function showOverlay(ev) {
-  ev.preventDefault()
-  document.querySelector('.overlay').classList.add('active')
-  const id = ev.target.id === 'btnAddPerson' ? 'dlgPerson' : 'dlgIdea';
-  //TODO: check that person is selected before adding an idea
-  document.getElementById(id).classList.add('active')
 }
 
 function handleIdeaClick(ev){
