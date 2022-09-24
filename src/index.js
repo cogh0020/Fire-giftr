@@ -117,10 +117,11 @@ async function getIdeas(id){
 }
 
 function buildIdeas(ideas){
+  console.log("Build Ideas called")
   let ul = document.querySelector('ul.idea-list')
   if (ideas.length == 0) {
     ul.innerHTML = 
-    `<li class="idea">
+    `<li id="noIdeaModal" class="idea">
       <div class="emptyIdeas">
         <h2>No ideas yet!</h2>
       </div>
@@ -262,6 +263,8 @@ async function saveIdea(ev){
 }
 
 function showIdea(gift){
+  console.log("Show Idea called")
+  console.log(gift)
   let li = document.getElementById(gift.id);
   if(li){
     //update on screen
@@ -296,6 +299,8 @@ function showIdea(gift){
               </div>
             </div>
           </li>`
+    let emptyDiv = document.getElementById("noIdeaModal")
+    console.log(emptyDiv)
     document.querySelector('ul.idea-list').innerHTML += li;
   }
 }
