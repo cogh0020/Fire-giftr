@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, doc, getDocs, query, where, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, doc, getDocs, query, where, addDoc, deleteDoc, setDoc } from 'firebase/firestore';
 
 
 const firebaseConfig = {
@@ -15,8 +15,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 // get a reference to the database
 const db = getFirestore(app);
-const myDocumentRef = doc(db, 'collection-name', 'document-id');
-const myCollectionRef = collection(db, 'collection-name');
+const myPeopleRef = collection(db, 'people');
+const myIdeasRef = collection(db, 'gift-ideas')
 const people = [];
 const giftIdeas = [];
 let currentPersonID = '';
@@ -35,10 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
     //Event listeners for AddPerson and AddIdea
   document
     .getElementById('btnAddPerson')
-    .addEventListener('click', showOverlay);
+    .addEventListener('click', handlePersonClick);
   document
   .getElementById('btnAddIdea')
-  .addEventListener('click', showOverlay);
+  .addEventListener('click', handleIdeaClick);
 
   document
   .getElementById('btnSavePerson')
@@ -50,7 +50,11 @@ document.addEventListener('DOMContentLoaded', () => {
   
   document
   .getElementById('personUL')
-  .addEventListener('click', handleClick)
+  .addEventListener('click', handlePersonClick)
+
+  document
+  .getElementById('ideaUL')
+  .addEventListener('click', handleIdeaClick)
 
   getPeople()
 });
@@ -68,6 +72,9 @@ async function getPeople(){
     people.push({id, ...data});
   });
   buildPeople(people);
+  currentPersonID = people[0].id
+  setSelectedPerson()
+  getIdeas(currentPersonID)
 }
 
 //Create the list of persons in li elements
@@ -112,13 +119,19 @@ async function getIdeas(id){
 function buildIdeas(ideas){
   let ul = document.querySelector('ul.idea-list')
   //Clear the UL of existing ideas
-  ul.innerHTML = ideas.map(idea=>{
-    return `<li data-id="${idea.id}" class="idea">
-            <label for="chk-uniqueid"
-              ><input type="checkbox" id="chk-uniqueid" /> Bought</label
-            >
-            <p class="title">${idea.idea}</p>
-            <p class="location">${idea.location}</p>
+  ul.innerHTML = ideas.map(gift=>{
+    return `<li data-id="${gift.id}" class="idea">
+            <label for="chk-uniqueid"><input type="checkbox" id="chk-uniqueid" /> Bought</label>
+            <div class="gift-content">
+              <div class="gift-text">
+                <p class="title">${gift.idea}</p>
+                <p class="location">${gift.location}</p>
+              </div>
+              <div class="gift-buttons">
+                <button class="edit">Edit</button>
+                <button class="delete">Delete</button>
+              </div>
+            </div>
           </li>`;
   }).join('')
 }
@@ -136,25 +149,48 @@ async function savePerson(ev){
     'birth-day': day
   };
   console.log(person)
-  try {
-    const docRef = await addDoc(collection(db, 'people'), person );
-    console.log('Document written with ID: ', docRef.id);
-    //1. clear the form fields 
-    document.getElementById('name').value = '';
-    document.getElementById('month').value = '';
-    document.getElementById('day').value = '';
-    //2. hide the dialog and the overlay
-    hideOverlay();
-    //3. display a message to the user about success 
-    tellUser(`Person ${name} added to database`);
-    person.id = docRef.id;
-    //4. ADD the new HTML to the <ul> using the new object
-    showPerson(person);
-  } catch (err) {
-    console.error('Error adding document: ', err);
-    //do you want to stay on the dialog?
-    //display a mesage to the user about the problem
+  let id = document.getElementById('btnSavePerson').dataset.id
+  let docRef = doc(myPeopleRef, id)
+  console.log(id)
+  console.log(docRef)
+
+  if (docRef){ //an id is being stored. Call setDoc using this value
+    try {
+      await setDoc(docRef, person)
+      //1. clear the form fields 
+      document.getElementById('name').value = '';
+      document.getElementById('month').value = '';
+      document.getElementById('day').value = '';
+      //2. hide the dialog and the overlay
+      hideOverlay();
+      //3. display a message to the user about success 
+      tellUser(`Person ${name} added to database`);
+      person.id = docRef.id;
+      //4. ADD the new HTML to the <ul> using the new object
+      showPerson(person);
+      } catch (err) {
+        console.error('Error adding document: ', err);
+      }
+  } else { //There is no id, call addDoc
+    try {
+      const docRef = await addDoc(collection(db, 'people'),person )
+      console.log('Document written with ID: ', docRef.id)
+      //1. clear the form fields 
+      document.getElementById('name').value = '';
+      document.getElementById('month').value = '';
+      document.getElementById('day').value = '';
+      //2. hide the dialog and the overlay
+      hideOverlay();
+      //3. display a message to the user about success 
+      tellUser(`Person ${name} added to database`);
+      person.id = docRef.id;
+      //4. ADD the new HTML to the <ul> using the new object
+      showPerson(person);
+      } catch (err) {
+        console.error('Error adding document: ', err);
+      }
   }
+
 }
 
 //copied from course notes, added months variable
@@ -185,7 +221,6 @@ function showPerson(person){
     document.querySelector('ul.person-list').innerHTML += li;
   }
 }
-
 
 //Make a saveGift function
 async function saveIdea(ev){
@@ -223,29 +258,51 @@ function showIdea(gift){
   if(li){
     //update on screen
     //replace the existing li with this new HTML
-    li.outerHTML = `<li data-id="${gift.id}" class="idea">
-            <label for="chk-uniqueid"
-              ><input type="checkbox" id="chk-uniqueid" /> Bought</label
-            >
-            <p class="title">${gift.idea}</p>
-            <p class="location">${gift.location}</p>
-          </li>`;
+    li.outerHTML =
+          ` <li data-id="${gift.id}" class="idea">
+            <label for="chk-uniqueid"><input type="checkbox" id="chk-uniqueid" /> Bought</label>
+            <div class="gift-content">
+              <div class="gift-text">
+                <p class="title">${gift.idea}</p>
+                <p class="location">${gift.location}</p>
+              </div>
+              <div class="gift-buttons">
+                <button class="edit">Edit</button>
+                <button class="delete">Delete</button>
+              </div>
+            </div>
+          </li>`
   }else{
     //add to screen
-    li = `<li data-id="${gift.id}" class="idea">
-            <label for="chk-uniqueid"
-              ><input type="checkbox" id="chk-uniqueid" /> Bought</label
-            >
-            <p class="title">${gift.idea}</p>
-            <p class="location">${gift.location}</p>
-          </li>`;
+    li = 
+    ` <li data-id="${gift.id}" class="idea">
+            <label for="chk-uniqueid"><input type="checkbox" id="chk-uniqueid" /> Bought</label>
+            <div class="gift-content">
+              <div class="gift-text">
+                <p class="title">${gift.idea}</p>
+                <p class="location">${gift.location}</p>
+              </div>
+              <div class="gift-buttons">
+                <button class="edit">Edit</button>
+                <button class="delete">Delete</button>
+              </div>
+            </div>
+          </li>`
           
     document.querySelector('ul.idea-list').innerHTML += li;
   }
 }
 
-function editPerson(){
+async function deletePerson(item){
+  await deleteDoc(doc(db, 'people', item.dataset.id ))
+  item.remove()
+  console.log("Person deleted with id:" + item.dataset.id)
+}
 
+async function deleteGift(item){
+  await deleteDoc(doc(db, 'gift-ideas', item.dataset.id ))
+  item.remove()
+  console.log("Gift deleted with id:" + item.dataset.id)
 }
 
 //Create a message in the console to alert the user
@@ -254,36 +311,71 @@ function tellUser(message){
 }
 
 function hideOverlay(ev) {
-  if (ev != undefined) {
-    ev.preventDefault();
-  }
   document.querySelector('.overlay').classList.remove('active');
   document
     .querySelectorAll('.overlay dialog')
     .forEach((dialog) => dialog.classList.remove('active'));
+  //TODO: Clear the dataset id from overlay and add buttons
+  
 }
+//showOverlay is obsolete - functionality moved to handleIdeaClick and handlePersonCLick
 function showOverlay(ev) {
-  ev.preventDefault();
-  document.querySelector('.overlay').classList.add('active');
+  ev.preventDefault()
+  document.querySelector('.overlay').classList.add('active')
   const id = ev.target.id === 'btnAddPerson' ? 'dlgPerson' : 'dlgIdea';
   //TODO: check that person is selected before adding an idea
-  document.getElementById(id).classList.add('active');
+  document.getElementById(id).classList.add('active')
 }
 
-function handleClick(ev){
-  console.log("handle Click called")
+function handleIdeaClick(ev){
+  ev.preventDefault()
+  console.log("handleIdeaClick called")
+  const li = ev.target.closest(".idea")
+  const id = li ? li.dataset.id : null
+  console.log(li)
+  if (id){
+    if (ev.target.classList.contains('edit')){
+      console.log('Editing a gift')
+      document.getElementById('btnSaveIdea').dataset.id = id
+      
+      //EDIT the doc using the id to get a docRef
+      //show the dialog form to EDIT the doc
+      //load all the thing document details into the form from docRef
+    } else if (ev.target.classList.contains('delete')){
+      console.log('Deleting an idea')
+      //TODO: Make a confirmation window for deleting items
+      deleteGift(li)
+    } else {
+      //Content inside the <li> but not a <button> was clicked
+      //If the <li> was a person, set to the current selection
+      console.log("Clicked in the li but not on a button")
+    }
+
+  } else {
+    console.log("Clicked a button not inside li")
+    //Show overlay with idea dialog
+    document.querySelector('.overlay').classList.add('active')
+    document.getElementById('dlgIdea').classList.add('active')
+  }
+}
+
+function handlePersonClick(ev){
+  ev.preventDefault()
+  console.log("handlePersonClick called")
   const li = ev.target.closest(".person")
   const id = li ? li.dataset.id : null
+  console.log(li)
   if (id){
     if (ev.target.classList.contains('edit')){
       console.log('Editing a person')
+      document.getElementById('btnSavePerson').dataset.id = id
       //EDIT the doc using the id to get a docRef
       //show the dialog form to EDIT the doc
       //load all the thing document details into the form from docRef
     } else if (ev.target.classList.contains('delete')){
       console.log('Deleting a person')
-      //DELETE the doc using the id to get a docRef
-      //Make a confirmation window
+      //TODO: Make a confirmation window for deleting items
+      deletePerson(li)
     } else {
       //Content inside the <li> but not a <button> was clicked
       //If the <li> was a person, set to the current selection
@@ -293,6 +385,9 @@ function handleClick(ev){
     }
   } else {
     console.log("Clicked a button not inside li")
+    //Show overlay with person dialog
+    document.querySelector('.overlay').classList.add('active')
+    document.getElementById('dlgPerson').classList.add('active')
   }
 }
 
