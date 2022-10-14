@@ -199,7 +199,6 @@ async function savePerson(ev){
         console.error('Error adding document: ', err);
       }
   }
-
 }
 
 //copied from course notes, added months variable
