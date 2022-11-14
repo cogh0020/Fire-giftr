@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase/app';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, collection, doc, getDocs, query, where, addDoc, deleteDoc, setDoc } from 'firebase/firestore';
 
 
@@ -21,6 +22,8 @@ const people = [];
 const giftIdeas = [];
 let currentPersonID = '';
 let currentPersonRef = undefined;
+
+const auth = getAuth(app)
 
 document.addEventListener('DOMContentLoaded', () => {
   console.log("DOM content loaded")
