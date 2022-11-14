@@ -92,6 +92,7 @@ function buildPeople(people){
   }).join('')
 }
 
+//Get Ideas gets a reference to a person document, then queries the server for that document's gifts
 async function getIdeas(id){
   //get an actual reference to the person document 
   const personRef = doc(collection(db, 'people'), id);
@@ -116,6 +117,7 @@ async function getIdeas(id){
   buildIdeas(giftIdeas)
 }
 
+//buildIdeas sets the innerHTML of the ideas UL 
 function buildIdeas(ideas){
   console.log("Build Ideas called")
   let ul = document.querySelector('ul.idea-list')
@@ -145,7 +147,8 @@ function buildIdeas(ideas){
   }
 }
 
-//copied from course notes
+//copied from course notes. Saves a person document's data from the overlay form. 
+//Handles add and edit based on if a docRef was found
 async function savePerson(ev){
   //function called when user clicks save button from person dialog
   let name = document.getElementById('name').value;
@@ -261,6 +264,7 @@ async function saveIdea(ev){
   }
 }
 
+
 function showIdea(gift){
   console.log("Show Idea called")
   console.log(gift)
@@ -316,6 +320,7 @@ async function deleteGift(item){
   console.log("Gift deleted with id:" + item.dataset.id)
 }
 
+
 //Create a message in the console to alert the user
 function tellUser(message){
   console.log(message)
@@ -340,7 +345,9 @@ function handleIdeaClick(ev){
     if (ev.target.classList.contains('edit')){
       console.log('Editing a gift')
       document.getElementById('btnSaveIdea').dataset.id = id
-      
+      document.getElementById('dlgIdeaHeader').innerText ='Edit a gift'
+      document.querySelector('.overlay').classList.add('active')
+      document.getElementById('dlgIdea').classList.add('active')
       //EDIT the doc using the id to get a docRef
       //show the dialog form to EDIT the doc
       //load all the thing document details into the form from docRef
@@ -357,6 +364,7 @@ function handleIdeaClick(ev){
   } else {
     console.log("Clicked a button not inside li")
     //Show overlay with idea dialog
+    document.getElementById('dlgIdeaHeader').innerText ='Add a gift'
     document.querySelector('.overlay').classList.add('active')
     document.getElementById('dlgIdea').classList.add('active')
   }
@@ -374,6 +382,11 @@ function handlePersonClick(ev){
       document.getElementById('btnSavePerson').dataset.id = id
       //EDIT the doc using the id to get a docRef
       //show the dialog form to EDIT the doc
+      //Set the Header for the dialog overlay to "Edit"
+      document.getElementById('dlgPersonHeader').innerText ='Edit a person'
+      document.querySelector('.overlay').classList.add('active')
+      document.getElementById('dlgPerson').classList.add('active')
+      //Set the save button
       //load all the thing document details into the form from docRef
     } else if (ev.target.classList.contains('delete')){
       console.log('Deleting a person')
@@ -389,6 +402,10 @@ function handlePersonClick(ev){
   } else {
     console.log("Clicked a button not inside li")
     //Show overlay with person dialog
+    //Clear the dataset from the save button
+    //Set the header for the dialog to "Add"
+          document.getElementById('dlgPersonHeader').innerText = 'Add a person'
+    document.getElementById('btnSavePerson').dataset.id = ''
     document.querySelector('.overlay').classList.add('active')
     document.getElementById('dlgPerson').classList.add('active')
   }
