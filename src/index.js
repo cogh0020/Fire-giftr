@@ -237,15 +237,15 @@ async function savePerson(ev){
 
 //copied from course notes, added months variable
 function showPerson(person){
-  let li = document.getElementById(person.id);
+  let li = document.querySelectorAll(`[data-id='${person.id}']`); //Find an li in the dom with an id that matches the created person
   console.log(li)
   let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September','October','November','December'];
-  if(li){
+  if(li.length > 0){ //TODO: Find a way to return the li with a corresponding data-id value
     //update on screen
     const dob = `${months[person['birth-month']-1]} ${person['birth-day']}`;
     //Use the number of the birth-month less 1 as the index for the months array
     //replace the existing li with this new HTML
-    li.outerHTML = `<li id="${person.id}" class="person">
+    li[0].outerHTML = `<li data-id="${person.id}" class="person">
             <p class="name">${person.name}</p>
             <p class="dob">${dob}</p>
             <button class="edit">Edit</button>
@@ -255,7 +255,7 @@ function showPerson(person){
     //add to screen
     const dob = `${months[person['birth-month']-1]} ${person['birth-day']}`;
     //Use the number of the birth-month less 1 as the index for the months array
-    li = `<li id="${person.id}" class="person">
+    li = `<li data-id="${person.id}" class="person">
             <p class="name">${person.name}</p>
             <p class="dob">${dob}</p>
             <button class="edit">Edit</button>
