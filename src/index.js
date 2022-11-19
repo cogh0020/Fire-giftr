@@ -469,7 +469,6 @@ function clearScreen() {
   giftIdeas = []
   buildPeople(people)
   buildIdeas()
-
 }
 
 //AUTH FUNCTIONS
