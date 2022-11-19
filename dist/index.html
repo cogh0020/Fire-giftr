@@ -12,8 +12,12 @@
     <header>
       <h1>Fire-Giftr</h1>
       <h2>All Gifts Must Go!</h2>
+      <div id="login-bar">
+        <button id="sign-in-button">Sign in</button>
+        <button id="sign-out-button">Sign out</button>
+      </div>
     </header>
-    <main>
+    <main id="main">
       <section class="people">
         <h2>People <button id="btnAddPerson">Add Person</button></h2>
         <ul id="personUL" class="person-list">
@@ -23,19 +27,6 @@
         <h2>Ideas <button id="btnAddIdea">Add Idea</button></h2>
         <ul id="ideaUL"class="idea-list">
           <!-- Ideas go here -->
-          <li class="idea">
-            <label for="chk-uniqueid"><input type="checkbox" id="chk-uniqueid" /> Bought</label>
-            <div class="gift-content">
-              <div class="gift-text">
-                <p class="title">Gift</p>
-                <p class="location">Location</p>
-              </div>
-              <div class="gift-buttons">
-                <button class="edit">Edit</button>
-                <button class="delete">Delete</button>
-              </div>
-            </div>
-          </li>
         </ul>
       </section>
     </main>
@@ -79,7 +70,7 @@
           <button id="btnSavePerson">Save</button>
         </p>
       </dialog>
-      <dialog id="dlgIdea" class="active">
+      <dialog id="dlgIdea">
         <h2 id="dlgIdeaHeader">Add Gift Idea</h2>
         <p>
           <label for="title">Title:</label>
