@@ -72,9 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
   document.getElementById('sign-out-button')
   .addEventListener('click', handleLogout)
-  
-  //attemptLogin()
-  //getPeople()
 });
 
 //get people collection from database
