@@ -12,18 +12,19 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig)
 // get a reference to the database
-const db = getFirestore(app);
-const myPeopleRef = collection(db, 'people');
+const db = getFirestore(app)
+const myPeopleRef = collection(db, 'people')
 const myIdeasRef = collection(db, 'gift-ideas')
-let people = [];
-let giftIdeas = [];
-let currentPersonID = '';
-let currentPersonRef = undefined;
+let people = []
+let giftIdeas = []
+let currentPersonID = ''
+let currentPersonRef = undefined
+let currentUserRef = undefined
 
 const auth = getAuth(app)
-const provider = new GithubAuthProvider();
+const provider = new GithubAuthProvider()
 provider.setCustomParameters({
   'allow_signup': 'true'
 })
@@ -82,7 +83,17 @@ async function getPeople(){
   people = []
     //call this from DOMContentLoaded init function 
     //the db variable is the one created by the getFirestore(app) call.
-  const querySnapshot = await getDocs(collection(db, 'people'));
+
+  const userRef = await getUser();
+  console.log(userRef)
+  const peopleCollectionRef = collection(db, "people")
+  const docs = query(
+    peopleCollectionRef,
+    where('owner','==',userRef)
+  )
+  const querySnapshot = await getDocs(docs);
+  console.log(querySnapshot)
+  //const querySnapshot = await getDocs(collection(db, 'people'));
   querySnapshot.forEach((doc) => {
   //every `doc` object has a `id` property that holds the `_id` value from Firestore.
   //every `doc` object has a doc() method that gives you a JS object with all the properties
@@ -179,15 +190,16 @@ function buildIdeas(ideas){
 //Handles add and edit based on if a docRef was found
 async function savePerson(ev){
   //function called when user clicks save button from person dialog
-  let name = document.getElementById('name').value;
-  let month = document.getElementById('month').value;
-  let day = document.getElementById('day').value;
+  let name = document.getElementById('name').value
+  let month = document.getElementById('month').value
+  let day = document.getElementById('day').value
   if(!name || !month || !day) return; //form needs more info 
   const person = {
     name,
     'birth-month': month,
-    'birth-day': day
-  };
+    'birth-day': day,
+    'owner':currentUserRef
+  }
   console.log(person)
   let id = document.getElementById('btnSavePerson').dataset.id
   console.log(id, myPeopleRef)
@@ -479,7 +491,14 @@ async function attemptLogin(){
   .then((result)=> {
     const credential = GithubAuthProvider.credentialFromResult(result)
     const token = credential.accessToken
+
     const user = result.user
+    console.log(auth)
+    const usersColRef = collection(db, 'users')
+    setDoc(doc(usersColRef, user.uid), {
+      displayName: user.displayName
+    }, {merge:true})
+
     window.sessionStorage.setItem("giftr", JSON.stringify(token))
     if (user){
       console.log("User found while signing in with popup")
@@ -545,4 +564,11 @@ function validateWithToken(token){
     } catch (err) {
       console.log(err)
     }
+}
+//PERMISSION METHODS
+async function getUser() {
+  const ref = doc(db, "users", auth.currentUser.uid)
+  currentUserRef = ref
+  console.log(currentUserRef)
+  return ref
 }
