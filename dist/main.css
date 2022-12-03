@@ -4,61 +4,72 @@
   --very-light-purple: #d7abeb;
   --radii: 0.4rem;
 }
+
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
   font-weight: 300;
 }
+
 html {
   font-size: 20px;
   font-family: sans-serif;
 }
+
 body {
   min-height: 100vh;
 }
+
 header,
 main {
-  padding: 1rem 4rem;
+  padding: 1rem 1rem;
 }
+
 header {
   background-color: var(--light-purple);
   border-bottom: 0.1rem solid var(--dark-purple);
 }
+
 header h1 {
   font-size: 4rem;
   font-weight: 500;
   color: #fff;
   text-shadow: 2px 2px 2px var(--dark-purple);
 }
+
 header h2 {
   font-size: 2.5rem;
   font-weight: 300;
   color: var(--dark-purple);
 }
+
 main {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
 }
-main > section {
+
+main>section {
   flex-basis: 50%;
   flex-grow: 1;
   flex-shrink: 1;
 }
+
 section.ideas {
-  min-height: 100vh;
-  padding-left: 1rem;
-  border-left: 1px solid var(--light-purple);
+  padding-top: 2rem;
+  border-top: 1px solid var(--light-purple);
 }
+
 section h2 {
   font-size: 2rem;
   color: var(--dark-purple);
   display: flex;
   justify-content: space-between;
 }
-section h2 > button {
+
+section h2>button {
   margin-right: 4rem;
   padding: 0.1rem 2rem;
   border: 1px solid var(--dark-purple);
@@ -71,22 +82,27 @@ section h2 > button {
   -ms-border-radius: var(--radii);
   -o-border-radius: var(--radii);
 }
+
 ul {
   list-style: none;
 }
+
 .person-list li {
   margin: 1rem 0;
   padding: 0.5rem 2rem;
   cursor: pointer;
 }
+
 .person-list li.selected {
   background-color: var(--light-purple);
 }
+
 .person-list p.name {
   font-size: 1.2rem;
   line-height: 2rem;
   color: #222;
 }
+
 .person-list p.dob {
   font-size: 0.8rem;
   line-height: 1rem;
@@ -117,6 +133,7 @@ ul {
   background-color: white;
   border-radius: 0.3rem;
 }
+
 .gift-buttons {
   display: flex;
   flex-direction: row;
@@ -135,6 +152,7 @@ button {
   padding: 1rem;
   justify-content: center;
 }
+
 .idea-list .idea label {
   font-size: 0.8rem;
   line-height: 1rem;
@@ -144,12 +162,15 @@ button {
   grid-area: tab;
   align-self: center;
 }
+
 .idea-list .idea label:has(input[type='checkbox']:checked) {
   color: #555;
 }
+
 .idea-list .idea [type='checkbox'] {
   accent-color: var(--light-purple);
 }
+
 .idea-list p.title {
   font-size: 1.2rem;
   line-height: 2rem;
@@ -159,6 +180,7 @@ button {
   border-top-right-radius: 0.3rem;
   grid-area: top;
 }
+
 .idea-list p.location {
   font-size: 1rem;
   line-height: 1rem;
@@ -177,6 +199,7 @@ section.overlay {
   z-index: 100;
   display: none;
 }
+
 section.overlay.active {
   display: flex;
   flex-direction: row;
@@ -186,39 +209,46 @@ section.overlay.active {
   justify-content: center;
   align-items: center;
 }
+
 dialog {
   background-color: #fff;
   display: none;
 }
+
 dialog.active {
   display: block;
   margin: auto;
   width: 80vw;
   height: 60vh;
 }
+
 dialog.active h2 {
   background-color: var(--dark-purple);
   color: #fff;
   padding: 1rem 3rem;
   font-size: 2rem;
 }
+
 dialog.active p {
   display: flex;
   margin: 1rem 3rem;
   justify-content: flex-start;
   align-items: flex-start;
 }
+
 dialog.active label {
   flex-basis: 20ch;
   font-size: 1rem;
   font-family: inherit;
   font-weight: inherit;
 }
+
 dialog.active :is(input, button) {
   font-size: 1rem;
   font-family: inherit;
   font-weight: inherit;
 }
+
 dialog button {
   margin: 0 2rem;
   padding: 0.1rem 2rem;
@@ -228,6 +258,22 @@ dialog button {
   border-radius: var(--radii);
   cursor: pointer;
 }
+
 :is(dialog, h2) button:active {
   background-color: var(--light-purple);
+}
+
+@media only screen and (min-width:40rem) {
+  main {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  section.ideas {
+    min-height: 100vh;
+    padding-left: 1rem;
+    border-left: 1px solid var(--light-purple);
+  }
 }

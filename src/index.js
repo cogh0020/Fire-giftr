@@ -153,7 +153,7 @@ async function getIdeas(id){
 function buildIdeas(ideas){
   console.log("Build Ideas called")
   let ul = document.querySelector('ul.idea-list')
-  if (!ideas) { //buildIdeas was called but the value was "falsey. buildIdeas was most likely called from clearScreen"
+  if (!ideas) { //buildIdeas was called but the value was "falsey". buildIdeas was most likely called from clearScreen"
     ul.innerHTML = ``
   } else { 
     if (ideas.length == 0) {
@@ -305,11 +305,11 @@ async function saveIdea(ev){
   }
 }
 
-
 function showIdea(gift){
   console.log("Show Idea called")
   console.log(gift)
   let li = document.getElementById(gift.id);
+
   if(li){
     //update on screen
     //replace the existing li with this new HTML
@@ -343,7 +343,10 @@ function showIdea(gift){
               </div>
             </div>
           </li>`
-    let emptyDiv = document.getElementById("noIdeaModal")
+    let emptyDiv = document.getElementById("noIdeaModal") //If we have something in the gift ideas, we dont need the "No ideas" indicator anymore
+    if (emptyDiv != null){
+      emptyDiv.remove()
+    }
     console.log(emptyDiv)
     document.querySelector('ul.idea-list').innerHTML += li;
   }
@@ -450,7 +453,7 @@ function handlePersonClick(ev){
     //Show overlay with person dialog
     //Clear the dataset from the save button
     //Set the header for the dialog to "Add"
-          document.getElementById('dlgPersonHeader').innerText = 'Add a person'
+    document.getElementById('dlgPersonHeader').innerText = 'Add a person'
     document.getElementById('btnSavePerson').dataset.id = ''
     document.querySelector('.overlay').classList.add('active')
     document.getElementById('dlgPerson').classList.add('active')
@@ -527,17 +530,17 @@ onAuthStateChanged(auth, (user) =>{
   if (user) {
     //User is signed in
     console.log("Auth state: User signed in" + user)
-    document.getElementById("sign-in-button").disabled = true
-    document.getElementById("sign-out-button").disabled = false
-    document.getElementById("btnAddPerson").disabled = false
-    document.getElementById("btnAddIdea").disabled = false
+    document.getElementById("sign-in-button").style.display = "none";
+    document.getElementById("sign-out-button").style.display = "inline-block";
+    document.getElementById("btnAddPerson").style.display = "inline-block";
+    document.getElementById("btnAddIdea").style.display = "inline-block";
   } else {
     //user is signed out
     console.log("Auth state: User signed out")
-    document.getElementById("sign-in-button").disabled = false
-    document.getElementById("sign-out-button").disabled = true
-    document.getElementById("btnAddIdea").disabled = true
-    document.getElementById("btnAddPerson").disabled = true
+    document.getElementById("sign-in-button").style.display = "inline-block";
+    document.getElementById("sign-out-button").style.display = "none";
+    document.getElementById("btnAddIdea").style.display = "none";
+    document.getElementById("btnAddPerson").style.display = "none";
 
   }
 })
