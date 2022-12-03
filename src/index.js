@@ -530,17 +530,21 @@ onAuthStateChanged(auth, (user) =>{
   if (user) {
     //User is signed in
     console.log("Auth state: User signed in" + user)
-    document.getElementById("sign-in-button").style.display = "none";
-    document.getElementById("sign-out-button").style.display = "inline-block";
-    document.getElementById("btnAddPerson").style.display = "inline-block";
-    document.getElementById("btnAddIdea").style.display = "inline-block";
+    document.getElementById("sign-in-button").style.display = "none"
+    document.getElementById("sign-out-button").style.display = "inline-block"
+    document.getElementById("btnAddPerson").style.display = "inline-block"
+    document.getElementById("btnAddIdea").style.display = "inline-block"
+    document.getElementById("btnAddPerson").style.display = "inline-block"
+    document.getElementById("btnAddIdea").style.display = "inline-block"
   } else {
     //user is signed out
     console.log("Auth state: User signed out")
-    document.getElementById("sign-in-button").style.display = "inline-block";
-    document.getElementById("sign-out-button").style.display = "none";
-    document.getElementById("btnAddIdea").style.display = "none";
-    document.getElementById("btnAddPerson").style.display = "none";
+    document.getElementById("sign-in-button").style.display = "inline-block"
+    document.getElementById("sign-out-button").style.display = "none"
+    document.getElementById("btnAddIdea").style.display = "none"
+    document.getElementById("btnAddPerson").style.display = "none"
+    document.getElementById("btnAddPerson").style.display = "none"
+    document.getElementById("btnAddIdea").style.display = "none"
 
   }
 })

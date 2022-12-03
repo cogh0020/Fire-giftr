@@ -274,6 +274,8 @@ dialog button {
   section.ideas {
     min-height: 100vh;
     padding-left: 1rem;
+    padding-top: 0rem;
+    border-top: 0px;
     border-left: 1px solid var(--light-purple);
   }
 }
